@@ -1,4 +1,7 @@
+using AutoMapper;
+using Mango.Services.Products.API;
 using Mango.Services.Products.API.DbContexts;
+using Mango.Services.Products.API.Repository;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 
@@ -14,6 +17,11 @@ builder.Services.AddSwaggerGen();
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(connectionString));
 
+
+IMapper mapper = MappingConfig.Registermaps().CreateMapper();
+builder.Services.AddSingleton(mapper);
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+builder.Services.AddScoped<IProductRepository, ProductRepository>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -30,3 +38,4 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
+
